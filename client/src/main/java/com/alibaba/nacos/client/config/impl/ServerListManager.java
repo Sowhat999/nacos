@@ -36,6 +36,7 @@ import com.alibaba.nacos.common.utils.InternetAddressUtil;
 import com.alibaba.nacos.common.utils.IoUtils;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.common.utils.ThreadUtils;
+import java.security.SecureRandom;
 import org.slf4j.Logger;
 
 import java.io.StringReader;
@@ -546,7 +547,7 @@ public class ServerListManager implements Closeable {
         
         static class RandomizedServerAddress implements Comparable<RandomizedServerAddress> {
             
-            static Random random = new Random();
+            static Random random = new SecureRandom();
             
             String serverIp;
             

@@ -24,6 +24,7 @@ import com.alibaba.nacos.test.base.ConfigCleanUtils;
 import com.alibaba.nacos.test.base.HttpClient4Test;
 import com.alibaba.nacos.test.base.Params;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.security.SecureRandom;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -145,7 +146,7 @@ public class ConfigAPI_V2_CITCase extends HttpClient4Test {
     
     public static String randomContent() {
         StringBuilder sb = new StringBuilder();
-        Random rand = new Random();
+        Random rand = new SecureRandom();
         int temp = rand.nextInt(10) + 1;
         sb.append("contentTest");
         for (int i = 0; i < temp; i++) {

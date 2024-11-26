@@ -41,6 +41,7 @@ import com.alibaba.nacos.common.utils.ThreadUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -96,7 +97,7 @@ public class ServerListManager implements ServerListFactory, Closeable {
         if (getServerList().isEmpty()) {
             throw new NacosLoadException("serverList is empty,please check configuration");
         } else {
-            currentIndex.set(new Random().nextInt(getServerList().size()));
+            currentIndex.set(new SecureRandom().nextInt(getServerList().size()));
         }
     }
     
