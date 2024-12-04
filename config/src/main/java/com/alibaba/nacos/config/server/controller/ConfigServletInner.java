@@ -38,6 +38,7 @@ import com.alibaba.nacos.config.server.utils.Protocol;
 import com.alibaba.nacos.config.server.utils.RequestUtil;
 import com.alibaba.nacos.config.server.utils.TimeUtils;
 import com.alibaba.nacos.plugin.encryption.handler.EncryptionHandler;
+import io.github.pixee.security.Newlines;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -135,7 +136,7 @@ public class ConfigServletInner {
         String acceptCharset = ENCODE_UTF8;
         
         if (isV2) {
-            response.setHeader(HttpHeaderConsts.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+            response.setHeader(HttpHeaderConsts.CONTENT_TYPE, Newlines.stripAll(MediaType.APPLICATION_JSON));
         }
         
         final String groupKey = GroupKey2.getKey(dataId, group, tenant);
@@ -155,11 +156,11 @@ public class ConfigServletInner {
                 
                 final String configType =
                         (null != cacheItem.getType()) ? cacheItem.getType() : FileTypeEnum.TEXT.getFileType();
-                response.setHeader(com.alibaba.nacos.api.common.Constants.CONFIG_TYPE, configType);
+                response.setHeader(com.alibaba.nacos.api.common.Constants.CONFIG_TYPE, Newlines.stripAll(configType));
                 FileTypeEnum fileTypeEnum = FileTypeEnum.getFileTypeEnumByFileExtensionOrFileType(configType);
                 String contentTypeHeader = fileTypeEnum.getContentType();
                 response.setHeader(HttpHeaderConsts.CONTENT_TYPE,
-                        isV2 ? MediaType.APPLICATION_JSON : contentTypeHeader);
+                        Newlines.stripAll(isV2 ? MediaType.APPLICATION_JSON : contentTypeHeader));
                 String pullEvent;
                 String content;
                 String md5;
@@ -184,7 +185,7 @@ public class ConfigServletInner {
                                     .getTagContent(dataId, group, tenant, autoTag);
                             pullEvent = ConfigTraceService.PULL_EVENT_TAG + "-" + autoTag;
                             response.setHeader(com.alibaba.nacos.api.common.Constants.VIPSERVER_TAG,
-                                    URLEncoder.encode(autoTag, StandardCharsets.UTF_8.displayName()));
+                                    Newlines.stripAll(URLEncoder.encode(autoTag, StandardCharsets.UTF_8.displayName())));
                         } else {
                             pullEvent = ConfigTraceService.PULL_EVENT;
                             md5 = cacheItem.getConfigCache().getMd5(acceptCharset);
@@ -208,7 +209,7 @@ public class ConfigServletInner {
                     return get404Result(response, isV2);
                     
                 }
-                response.setHeader(Constants.CONTENT_MD5, md5);
+                response.setHeader(Constants.CONTENT_MD5, Newlines.stripAll(md5));
                 
                 // Disable cache.
                 response.setHeader("Pragma", "no-cache");
@@ -216,7 +217,7 @@ public class ConfigServletInner {
                 response.setHeader("Cache-Control", "no-cache,no-store");
                 response.setDateHeader("Last-Modified", lastModified);
                 if (encryptedDataKey != null) {
-                    response.setHeader("Encrypted-Data-Key", encryptedDataKey);
+                    response.setHeader("Encrypted-Data-Key", Newlines.stripAll(encryptedDataKey));
                 }
                 PrintWriter out;
                 Pair<String, String> pair = EncryptionHandler.decryptHandler(dataId, encryptedDataKey, content);
